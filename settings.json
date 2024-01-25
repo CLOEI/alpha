@@ -1,8 +1,0 @@
-{
-  "permission": {
-    "clientUpdate": ["owner", "admin"],
-    "companyUpdate": ["owner", "admin"],
-    "userUpdate": ["owner", "admin"]
-  },
-  "port": 3000
-}

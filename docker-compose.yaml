@@ -1,0 +1,20 @@
+services:
+  engine:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+  backend:
+    build:
+      context: ./alphaMono/backend
+    ports:
+      - "5000:5000"
+  frontend:
+    build:
+      context: ./alphaMono/frontend
+    ports:
+      - "3000:3000"

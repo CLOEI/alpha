@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "start:dev",
+      "path": "alphaMono/backend",
+      "problemMatcher": [],
+      "label": "npm: start:dev - alphaMono/backend",
+      "detail": "npx nodemon"
+    },
+    {
+      "type": "npm",
+      "script": "dev",
+      "path": "alphaMono/frontend",
+      "problemMatcher": [],
+      "label": "npm: dev - alphaMono/frontend",
+      "detail": "next dev"
+    },
+    {
+      "label": "Start development",
+      "dependsOn": [
+        "npm: start:dev - alphaMono/backend",
+        "npm: dev - alphaMono/frontend"
+      ]
+    }
+  ]
+}
