@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { Memory } from "../models";
+import { Credential, Spec } from "../models";
 
 const typeDefs = `#graphql
   type Credential {
@@ -15,17 +15,23 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Mutation: {
-    addMemory: async (_: any, data: any) => {
+    addCredential: async (_: any, data: any) => {
       try {
-        const remote = await Memory.create(data);
-        return remote;
+        const spec = await Spec.findByPk(data.SpecClientID);
+        if (!spec) throw new GraphQLError("Spec not found");
+
+        const cred = await Credential.create({
+          name: data.name,
+        });
+        await (spec as any).addCredential(cred);
+        return cred;
       } catch (error) {
-        throw new GraphQLError("Error adding memory");
+        throw new GraphQLError("Error adding credentials");
       }
     },
-    updateSpec: async (_: any, data: any) => {
+    updateCredential: async (_: any, data: any) => {
       try {
-        await Memory.upsert(data);
+        await Credential.upsert(data);
         return true;
       } catch (error) {
         throw new GraphQLError("Error updating memory");

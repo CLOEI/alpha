@@ -19,6 +19,7 @@ class Memory
   public speed!: string;
   public size!: string;
   public ddr!: string;
+  public SpecClientID!: number;
 }
 
 export default (sequelize: Sequelize) => {

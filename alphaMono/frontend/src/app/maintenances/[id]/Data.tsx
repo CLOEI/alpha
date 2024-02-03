@@ -1,7 +1,5 @@
 import { gql, useMutation } from "@apollo/client";
 import {
-  AccordionItem,
-  Avatar,
   Button,
   Spacer,
   Switch,
@@ -12,8 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { sign } from "crypto";
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import SignaturePad from "react-signature-pad-wrapper";
 
 const DATA = [
@@ -38,7 +36,7 @@ const DATA = [
   "SR",
 ];
 
-function Data({ data, mid, refetch }: any) {
+function Data({ data, mid, refetch, loading }: any) {
   const signaturePad = useRef<SignaturePad>(null);
   const [check, setCheck] = useState(() => {
     if (data.Data.length > 0) {
@@ -47,11 +45,12 @@ function Data({ data, mid, refetch }: any) {
       return rest;
     }
 
-    const obj: any = {};
-    DATA.forEach((d) => {
-      obj[d.toLowerCase()] = false;
-    });
-    return obj;
+    return DATA.reduce((acc, d) => {
+      return {
+        ...acc,
+        [d.toLowerCase()]: false,
+      };
+    }, {});
   });
   const [upsetData] = useMutation(gql`
     mutation UpdateData($data: IData) {
@@ -75,12 +74,29 @@ function Data({ data, mid, refetch }: any) {
       ClientId: clientId,
       signature: signaturePad.current?.toDataURL(),
     };
-    await upsetData({
-      variables: {
-        data: newData,
+    toast.promise(
+      upsetData({
+        variables: {
+          data: newData,
+        },
+      }),
+      {
+        loading: "Saving...",
+        success: () => {
+          refetch();
+          return "Data saved successfully";
+        },
+        error: (err) => {
+          return err.message;
+        },
       },
-    });
-    refetch();
+      {
+        style: {
+          background: "#18181b",
+          color: "#fff",
+        },
+      }
+    );
   };
 
   return (
@@ -125,7 +141,7 @@ function Data({ data, mid, refetch }: any) {
         <Button color="danger" onClick={() => signaturePad.current?.clear()}>
           Clear
         </Button>
-        <Button color="success" onClick={onSave}>
+        <Button color="success" onClick={onSave} isLoading={loading}>
           Save
         </Button>
       </div>

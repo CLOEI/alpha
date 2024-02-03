@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
+import { Spec } from ".";
 
 interface CredentialAttributes {
   id: number;

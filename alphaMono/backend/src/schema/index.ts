@@ -71,12 +71,12 @@ const resolvers = {
     ...companyResolver.Mutation,
     ...userResolver.Mutation,
     ...clientResolver.Mutation,
-    // ...dataResolver.Mutation,
-    // ...remoteResolver.Mutation,
-    // ...memoryResolver.Mutation,
-    // ...credentialResolver.Mutation,
-    // ...printerResolver.Mutation,
-    // ...mappingResolver.Mutation,
+    ...dataResolver.Mutation,
+    ...remoteResolver.Mutation,
+    ...memoryResolver.Mutation,
+    ...credentialResolver.Mutation,
+    ...printerResolver.Mutation,
+    ...mappingResolver.Mutation,
   },
 };
 

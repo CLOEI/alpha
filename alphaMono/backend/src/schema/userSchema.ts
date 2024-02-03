@@ -59,6 +59,7 @@ const resolvers = {
             {
               model: Maintenance,
               include: ["Company"],
+              order: [["createdAt", "DESC"]],
             },
           ],
         });

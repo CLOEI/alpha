@@ -1,6 +1,6 @@
 "use client";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import {
   Accordion,
   AccordionItem,
@@ -11,13 +11,35 @@ import {
   Card,
   CardHeader,
   Divider,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
   Spacer,
+  Textarea,
 } from "@nextui-org/react";
 import dayjs from "dayjs";
-import SignaturePad from "react-signature-pad-wrapper";
 import Data from "./Data";
+import { Pencil } from "lucide-react";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import toast from "react-hot-toast";
+import { useState } from "react";
+
+const formSchema = z.object({
+  note: z.string().optional(),
+});
 
 function Page({ params }: any) {
+  const [updateNote] = useMutation(gql`
+    mutation UpdateNote($updateNoteId: Int!, $note: String!) {
+      updateNote(id: $updateNoteId, note: $note) {
+        id
+      }
+    }
+  `);
   const { loading, data, refetch } = useQuery(
     gql`
       query Maintenance($maintenanceId: Int!) {
@@ -63,6 +85,7 @@ function Page({ params }: any) {
           }
           createdAt
           type
+          note
         }
       }
     `,
@@ -72,6 +95,41 @@ function Page({ params }: any) {
       },
     }
   );
+  const [openModal, setOpenModal] = useState(false);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      note: data?.maintenance.note || "",
+    },
+  });
+
+  const onSubmit = async (form: z.infer<typeof formSchema>) => {
+    toast.promise(
+      updateNote({
+        variables: {
+          updateNoteId: parseInt(params.id),
+          ...form,
+        },
+      }),
+      {
+        loading: "Updating note...",
+        success: () => {
+          refetch();
+          setOpenModal(false);
+          return "Note updated successfully";
+        },
+        error: (err) => {
+          return err.message;
+        },
+      },
+      {
+        style: {
+          background: "#18181b",
+          color: "#fff",
+        },
+      }
+    );
+  };
 
   return (
     <div>
@@ -98,6 +156,19 @@ function Page({ params }: any) {
             <p className="text-default-500">
               Coordinate : {data.maintenance.Company.coordinate}
             </p>
+            <div>
+              <p className="text-default-500">
+                Note: {data.maintenance.note || "-"}
+              </p>
+              <Button
+                isIconOnly
+                size="sm"
+                className="flex ml-auto"
+                onClick={() => setOpenModal(true)}
+              >
+                <Pencil />
+              </Button>
+            </div>
             <Spacer y={3} />
             <div className="flex items-center space-x-2 overflow-hidden">
               <p className="text-xl text-default-500">User</p>
@@ -133,7 +204,12 @@ function Page({ params }: any) {
                         : 0
                     }/19 Checked`}
                   >
-                    <Data data={c} mid={params.id} refetch={refetch} />
+                    <Data
+                      data={c}
+                      mid={params.id}
+                      refetch={refetch}
+                      loading={loading}
+                    />
                   </AccordionItem>
                 );
               })}
@@ -141,6 +217,41 @@ function Page({ params }: any) {
           </div>
         ) : null}
       </div>
+      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Add Mapping</ModalHeader>
+              <ModalBody>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <div className="space-y-2">
+                    <div>
+                      <Textarea
+                        type="text"
+                        label="Note"
+                        placeholder="Note..."
+                        isRequired
+                        isInvalid={!!form.formState.errors.note}
+                        errorMessage={form.formState.errors.note?.message}
+                        {...form.register("note")}
+                      />
+                    </div>
+                    <div>
+                      <Button
+                        type="submit"
+                        className="ml-auto block"
+                        color="success"
+                      >
+                        Update
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

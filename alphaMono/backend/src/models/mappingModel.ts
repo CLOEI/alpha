@@ -13,6 +13,7 @@ class Mapping
 {
   public id!: number;
   public name!: string;
+  public SpecClientID!: number;
 }
 
 export default (sequelize: Sequelize) => {

@@ -39,6 +39,7 @@ const resolvers = {
       try {
         const companies = await Company.findAll({
           include: ["Clients"],
+          order: [["createdAt", "DESC"]],
         });
         return companies;
       } catch (error) {

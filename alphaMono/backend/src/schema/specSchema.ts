@@ -16,11 +16,11 @@ const typeDefs = `#graphql
     mac: String
     ups: String
     ClientId: Int
-    Remote: Remote
-    Memory: Memory
-    Credential: Credential
-    Printer: Printer
-    Mapping: Mapping
+    Remotes: [Remote!]
+    Memories: [Memory!]
+    Credentials: [Credential!]
+    Printers: [Printer!]
+    Mappings: [Mapping!]
   }
 
   input SpecInput {

@@ -17,6 +17,7 @@ class Remote
   public name!: string;
   public address!: string;
   public password!: string;
+  public SpecClientID!: number;
 }
 
 export default (sequelize: Sequelize) => {

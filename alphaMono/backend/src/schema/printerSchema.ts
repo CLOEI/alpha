@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { Printer } from "../models";
+import { Printer, Spec } from "../models";
 
 const typeDefs = `#graphql
   type Printer {
@@ -17,7 +17,10 @@ const resolvers = {
   Mutation: {
     addPrinter: async (_: any, data: any) => {
       try {
+        const spec = await Spec.findByPk(data.SpecClientID);
+        if (!spec) throw new GraphQLError("Spec not found");
         const remote = await Printer.create(data);
+        await (spec as any).addPrinter(remote);
         return remote;
       } catch (error) {
         throw new GraphQLError("Error adding printer");

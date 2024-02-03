@@ -117,13 +117,13 @@ function Companies({ data, refetch }: any) {
                 <CardHeader className="flex gap-3">
                   <Avatar name={company.name} />
                   <div className="flex flex-1 items-center justify-between">
-                    <p className="text-md">{company.name}</p>
-                    <Button
+                    <p className="text-md text-left">{company.name}</p>
+                    {/* <Button
                       color="danger"
                       onClick={() => removeCompany(company.id)}
                     >
                       <Trash size={24} />
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardHeader>
               </Card>

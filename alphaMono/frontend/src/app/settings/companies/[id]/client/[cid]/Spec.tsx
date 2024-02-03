@@ -22,7 +22,6 @@ import {
   MonitorUp,
   PcCase,
   Plus,
-  Printer,
   SmartphoneCharging,
   ToyBrick,
 } from "lucide-react";
@@ -30,6 +29,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
+import Credentials from "./Credentials";
+import Remotes from "./Remotes";
+import Mapping from "./Mapping";
+import Printer from "./Printer";
+import Ram from "./Ram";
 
 const formSchema = z.object({
   ip: z.string().optional(),
@@ -151,51 +155,11 @@ function Spec({ modal: { open, fn }, data, refetch, id }: any) {
           <CircuitBoard />
           <p>Motherboard: {data?.motherboard || "-"}</p>
         </div>
-        <div className="flex gap-2 items-center">
-          <CreditCard />
-          <p>Credentials: </p>
-          <div>
-            <Button radius="sm" startContent={<Plus />}>
-              Add
-            </Button>
-          </div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <MonitorUp />
-          <p>Remotes: </p>
-          <div>
-            <Button radius="sm" startContent={<Plus />}>
-              Add
-            </Button>
-          </div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <HardDriveDownload />
-          <p>Mapping: </p>
-          <div>
-            <Button radius="sm" startContent={<Plus />}>
-              Add
-            </Button>
-          </div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <Printer />
-          <p>Printer: </p>
-          <div>
-            <Button radius="sm" startContent={<Plus />}>
-              Add
-            </Button>
-          </div>
-        </div>
-        <div className="flex gap-2 items-center">
-          <MemoryStick />
-          <p>RAM: </p>
-          <div>
-            <Button radius="sm" startContent={<Plus />}>
-              Add
-            </Button>
-          </div>
-        </div>
+        <Credentials data={data?.Credentials} refetch={refetch} id={id} />
+        <Remotes data={data?.Remotes} refetch={refetch} id={id} />
+        <Mapping data={data?.Mappings} refetch={refetch} id={id} />
+        <Printer data={data?.Printers} refetch={refetch} id={id} />
+        <Ram data={data?.Memories} refetch={refetch} id={id} />
         <Spacer y={2} />
       </div>
       <Modal

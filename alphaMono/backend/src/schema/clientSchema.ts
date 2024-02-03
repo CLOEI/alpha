@@ -1,5 +1,14 @@
 import { GraphQLError } from "graphql";
-import { Client, Company, Spec } from "../models";
+import {
+  Client,
+  Company,
+  Credential,
+  Mapping,
+  Memory,
+  Printer,
+  Remote,
+  Spec,
+} from "../models";
 
 type Client = {
   id: number;
@@ -55,7 +64,7 @@ const typeDefs = `#graphql
     birthday: String
     Spec: Spec
     Company: Company
-    Data: [Data]
+    Data: [Data!]
   }
 
   type Query {
@@ -76,11 +85,16 @@ const resolvers = {
       try {
         const client = await Client.findOne({
           where: { id },
-          include: [Spec, Company],
+          include: [
+            {
+              model: Spec,
+              include: [Remote, Memory, Credential, Printer, Mapping],
+            },
+            Company,
+          ],
         });
         return client;
       } catch (error) {
-        console.log(error);
         throw new GraphQLError("Error fetching client");
       }
     },

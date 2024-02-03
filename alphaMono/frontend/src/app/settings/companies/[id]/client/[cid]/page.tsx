@@ -37,24 +37,24 @@ function Page({ params }: any) {
             display
             motherboard
             psu
-            Remote {
+            Remotes {
               name
               password
               address
             }
-            Printer {
+            Printers {
               name
             }
-            Memory {
+            Memories {
               speed
               size
               name
               ddr
             }
-            Mapping {
+            Mappings {
               name
             }
-            Credential {
+            Credentials {
               name
             }
             case

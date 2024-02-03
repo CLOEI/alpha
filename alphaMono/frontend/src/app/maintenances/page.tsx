@@ -153,7 +153,7 @@ function Page() {
                   key={i}
                   onClick={() => router.push(`/maintenances/${m.id}`)}
                 >
-                  <CardHeader className="flex gap-3">
+                  <CardHeader className="flex gap-3 items-start">
                     <Avatar name={m.Company.name} />
                     <div className="text-left">
                       <p className="text-md">{m.Company.name}</p>

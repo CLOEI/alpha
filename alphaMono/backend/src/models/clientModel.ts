@@ -1,4 +1,5 @@
 import { Sequelize, DataTypes, Model, Optional } from "sequelize";
+import { Company } from ".";
 
 interface ClientAttributes {
   id: number;
@@ -10,6 +11,7 @@ interface ClientAttributes {
   pcName: string;
   localPCPassword?: string;
   adminPCPassword?: string;
+  CompanyId: number;
 }
 
 interface ClientCreationAttributes extends Optional<ClientAttributes, "id"> {}
@@ -27,6 +29,7 @@ class Client
   public pcName!: string;
   public localPCPassword?: string;
   public adminPCPassword?: string;
+  public CompanyId!: number;
 }
 
 export default (sequelize: Sequelize) => {
@@ -63,6 +66,14 @@ export default (sequelize: Sequelize) => {
       },
       adminPCPassword: {
         type: DataTypes.STRING,
+      },
+      CompanyId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Company,
+          key: "id",
+        },
       },
     },
     {

@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { useState } from "react";
-import { Construction, Factory, Settings, User } from "lucide-react";
+import { Construction, Factory, LogOut, Settings, User } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -97,7 +97,26 @@ export default function Home() {
     <>
       <div className="flex h-screen justify-center items-center">
         <div className="grid gap-2">
-          <Button
+          {user && (
+            <Button
+              isIconOnly
+              color="danger"
+              className="fixed top-1 right-1"
+              onClick={() => {
+                localStorage.removeItem("token");
+                refetch();
+                toast.success("Logged out!", {
+                  style: {
+                    background: "#18181b",
+                    color: "#fff",
+                  },
+                });
+              }}
+            >
+              <LogOut />
+            </Button>
+          )}
+          {/* <Button
             isDisabled
             onClick={() => navigateTo("/users")}
             aria-label="Users"
@@ -107,7 +126,7 @@ export default function Home() {
             className="justify-start"
           >
             User
-          </Button>
+          </Button> */}
           <Button
             onClick={() => navigateTo("/maintenances")}
             aria-label="Maintenances"

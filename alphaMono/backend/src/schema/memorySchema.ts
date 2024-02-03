@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { Memory } from "../models";
+import { Memory, Spec } from "../models";
 
 const typeDefs = `#graphql
   type Memory {
@@ -20,13 +20,16 @@ const resolvers = {
   Mutation: {
     addMemory: async (_: any, data: any) => {
       try {
+        const spec = await Spec.findByPk(data.SpecClientID);
+        if (!spec) throw new GraphQLError("Spec not found");
         const remote = await Memory.create(data);
+        await (spec as any).addMemory(remote);
         return remote;
       } catch (error) {
         throw new GraphQLError("Error adding memory");
       }
     },
-    updateSpec: async (_: any, data: any) => {
+    updateMemory: async (_: any, data: any) => {
       try {
         await Memory.upsert(data);
         return true;

@@ -85,7 +85,7 @@ function Hero({ modal: { open, fn }, data, refetch, id }: any) {
 
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start space-x-1">
         <h1 className="text-2xl font-bold">
           {data.name}{" "}
           <span className="text-sm font-light text-default-500">
@@ -108,6 +108,8 @@ function Hero({ modal: { open, fn }, data, refetch, id }: any) {
                   <Input
                     type="text"
                     label="Name"
+                    defaultValue={data.name || ""}
+                    isRequired
                     isInvalid={!!form.formState.errors.name}
                     errorMessage={form.formState.errors.name?.message}
                     {...form.register("name")}
@@ -116,6 +118,7 @@ function Hero({ modal: { open, fn }, data, refetch, id }: any) {
                   <Input
                     type="text"
                     label="Street name"
+                    defaultValue={data.streetName || ""}
                     isInvalid={!!form.formState.errors.streetName}
                     errorMessage={form.formState.errors.streetName?.message}
                     {...form.register("streetName")}
@@ -124,6 +127,7 @@ function Hero({ modal: { open, fn }, data, refetch, id }: any) {
                   <Input
                     type="text"
                     label="Coordinate"
+                    defaultValue={data.coordinate || ""}
                     isInvalid={!!form.formState.errors.coordinate}
                     errorMessage={form.formState.errors.coordinate?.message}
                     {...form.register("coordinate")}

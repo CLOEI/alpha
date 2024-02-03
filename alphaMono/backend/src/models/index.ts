@@ -29,7 +29,6 @@ const Credential = credential(sequelize);
 
 // intialze associations
 Company.hasMany(Client);
-Client.belongsTo(Company);
 Spec.belongsTo(Client);
 Data.belongsTo(Client);
 Maintenance.hasMany(Data);
@@ -53,6 +52,23 @@ Printer.belongsTo(Spec);
 Remote.belongsTo(Spec);
 Mapping.belongsTo(Spec);
 Credential.belongsTo(Spec);
+
+Client.addHook("afterCreate", async (client) => {
+  Spec.create({ ClientId: client.toJSON().id });
+});
+Maintenance.addHook("afterCreate", async (maintenance) => {
+  const clients = await Client.findAll({
+    where: {
+      CompanyId: maintenance.toJSON().CompanyId,
+    },
+  });
+  for (let client of clients) {
+    Data.create({
+      ClientId: client.toJSON().id,
+      MaintenanceId: maintenance.toJSON().id,
+    });
+  }
+});
 
 sequelize.sync().then((res) => console.log(res));
 

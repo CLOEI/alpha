@@ -21,6 +21,7 @@ const typeDefs = `#graphql
   type Mutation {
     addMaintenance(type: String!, CompanyId: Int!): Maintenance!
     deleteMaintenance(id: Int!): Maintenance!
+    updateNote(id: Int!, note: String!): Maintenance!
   }
 `;
 
@@ -52,6 +53,7 @@ const resolvers = {
     maintenances: async () => {
       const maintenances = await Maintenance.findAll({
         include: ["User", "Company"],
+        order: [["createdAt", "DESC"]],
       });
       return maintenances;
     },
@@ -79,6 +81,17 @@ const resolvers = {
         const maintenance = await Maintenance.findByPk(id);
         if (!maintenance) throw new GraphQLError("Maintenance not found");
         await maintenance.destroy();
+        return maintenance;
+      } catch (error) {
+        throw new GraphQLError("Unexpected error occured");
+      }
+    },
+    updateNote: async (_: any, { id, note }: { id: number; note: string }) => {
+      try {
+        const maintenance = await Maintenance.findByPk(id);
+        if (!maintenance) throw new GraphQLError("Maintenance not found");
+        maintenance.note = note;
+        await maintenance.save();
         return maintenance;
       } catch (error) {
         throw new GraphQLError("Unexpected error occured");
