@@ -20,6 +20,7 @@ import * as z from "zod";
 import { useRouter } from "next/navigation";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
+import useAuth from "@/lib/useAuth";
 
 const formSchema = z.object({
   username: z.string().min(1, {
@@ -33,11 +34,7 @@ const formSchema = z.object({
 export default function Home() {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
-  const { data, refetch } = useQuery(gql`
-    query Query {
-      verified
-    }
-  `);
+  const { user, loading, refetch } = useAuth();
   const [login] = useMutation(gql`
     mutation Query($username: String!, $password: String!) {
       login(username: $username, password: $password)
@@ -53,7 +50,7 @@ export default function Home() {
   });
 
   const navigateTo = (path: string) => {
-    if (data?.verified == null || data?.verified == false) {
+    if (user == null || loading) {
       setOpenModal(true);
     } else {
       router.push(path);
@@ -99,41 +96,38 @@ export default function Home() {
   return (
     <>
       <div className="flex h-screen justify-center items-center">
-        <div className="space-x-2">
-          <Tooltip showArrow content="Users">
-            <Button
-              isIconOnly
-              isDisabled
-              onClick={() => navigateTo("/users")}
-              aria-label="Users"
-              radius="sm"
-              size="lg"
-            >
-              <User size={36} />
-            </Button>
-          </Tooltip>
-          <Tooltip showArrow content="Maintenances">
-            <Button
-              isIconOnly
-              onClick={() => navigateTo("/maintenances")}
-              aria-label="Maintenances"
-              radius="sm"
-              size="lg"
-            >
-              <Construction size={36} />
-            </Button>
-          </Tooltip>
-          <Tooltip showArrow content="Settings">
-            <Button
-              isIconOnly
-              onClick={() => navigateTo("/settings")}
-              aria-label="Settings"
-              radius="sm"
-              size="lg"
-            >
-              <Settings size={36} />
-            </Button>
-          </Tooltip>
+        <div className="grid gap-2">
+          <Button
+            isDisabled
+            onClick={() => navigateTo("/users")}
+            aria-label="Users"
+            radius="sm"
+            size="lg"
+            startContent={<User size={36} />}
+            className="justify-start"
+          >
+            User
+          </Button>
+          <Button
+            onClick={() => navigateTo("/maintenances")}
+            aria-label="Maintenances"
+            radius="sm"
+            size="lg"
+            startContent={<Factory size={36} />}
+            className="justify-start"
+          >
+            Maintenances
+          </Button>
+          <Button
+            onClick={() => navigateTo("/settings")}
+            aria-label="Settings"
+            radius="sm"
+            size="lg"
+            startContent={<Settings size={36} />}
+            className="justify-start"
+          >
+            Settings
+          </Button>
         </div>
       </div>
       <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>

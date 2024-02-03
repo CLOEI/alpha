@@ -24,24 +24,27 @@ import * as z from "zod";
 
 const formSchema = z.object({
   pcName: z.string().optional(),
-  pcPassword: z.string().optional(),
+  localPCPassword: z.string().optional(),
+  adminPCPassword: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().optional(),
 });
 
 function Client({ modal: { open, fn }, data, refetch, id }: any) {
   const [updateClient] = useMutation(gql`
-    mutation Mutation(
+    mutation UpdateClient(
       $updateClientId: Int!
       $pcName: String
-      $pcPassword: String
+      $localPcPassword: String
+      $adminPcPassword: String
       $phone: String
       $email: String
     ) {
       updateClient(
         id: $updateClientId
         pcName: $pcName
-        pcPassword: $pcPassword
+        localPCPassword: $localPcPassword
+        adminPCPassword: $adminPcPassword
         phone: $phone
         email: $email
       )
@@ -51,7 +54,8 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       pcName: data.pcName || "",
-      pcPassword: data.pcPassword || "",
+      localPCPassword: data.pcPassword || "",
+      adminPCPassword: data.adminPCPassword || "",
       phone: data.phone || "",
       email: data.email || "",
     },
@@ -63,7 +67,8 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
         variables: {
           updateClientId: parseInt(id),
           pcName: form.pcName,
-          pcPassword: form.pcPassword,
+          localPcPassword: form.localPCPassword,
+          adminPcPassword: form.adminPCPassword,
           phone: form.phone,
           email: form.email,
         },
@@ -103,7 +108,12 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
       </div>
       <p className="text-default-500">Company : {data.Company.name}</p>
       <p className="text-default-500">PC Name : {data.pcName}</p>
-      <p className="text-default-500">PC Password : {data.pcPassword}</p>
+      <p className="text-default-500">
+        Local PC Password : {data.localPCPassword}
+      </p>
+      <p className="text-default-500">
+        Admin PC Password : {data.adminPCPassword}
+      </p>
       <p className="text-default-500">Phone number : {data.phone}</p>
       <p className="text-default-500">Email : {data.email}</p>
       <Modal isOpen={open} onClose={() => fn(false)}>
@@ -116,6 +126,7 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
                   <Input
                     type="text"
                     label="PC Name"
+                    defaultValue={data.pcName || ""}
                     isInvalid={!!form.formState.errors.pcName}
                     errorMessage={form.formState.errors.pcName?.message}
                     {...form.register("pcName")}
@@ -123,15 +134,30 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
                   <Spacer y={1} />
                   <Input
                     type="text"
-                    label="PC Password"
-                    isInvalid={!!form.formState.errors.pcPassword}
-                    errorMessage={form.formState.errors.pcPassword?.message}
-                    {...form.register("pcPassword")}
+                    label="Local PC Password"
+                    defaultValue={data.localPCPassword || ""}
+                    isInvalid={!!form.formState.errors.localPCPassword}
+                    errorMessage={
+                      form.formState.errors.localPCPassword?.message
+                    }
+                    {...form.register("localPCPassword")}
+                  />
+                  <Spacer y={1} />
+                  <Input
+                    type="text"
+                    label="Admin PC Password"
+                    defaultValue={data.adminPCPassword || ""}
+                    isInvalid={!!form.formState.errors.adminPCPassword}
+                    errorMessage={
+                      form.formState.errors.adminPCPassword?.message
+                    }
+                    {...form.register("adminPCPassword")}
                   />
                   <Spacer y={1} />
                   <Input
                     type="text"
                     label="Phone number"
+                    defaultValue={data.phone || ""}
                     isInvalid={!!form.formState.errors.phone}
                     errorMessage={form.formState.errors.phone?.message}
                     {...form.register("phone")}
@@ -140,6 +166,7 @@ function Client({ modal: { open, fn }, data, refetch, id }: any) {
                   <Input
                     type="text"
                     label="Email"
+                    defaultValue={data.email || ""}
                     isInvalid={!!form.formState.errors.email}
                     errorMessage={form.formState.errors.email?.message}
                     {...form.register("email")}

@@ -8,7 +8,8 @@ interface ClientAttributes {
   birthday?: string;
   role: string;
   pcName: string;
-  pcPassword?: string;
+  localPCPassword?: string;
+  adminPCPassword?: string;
 }
 
 interface ClientCreationAttributes extends Optional<ClientAttributes, "id"> {}
@@ -24,7 +25,8 @@ class Client
   public birthday?: string;
   public role!: string;
   public pcName!: string;
-  public pcPassword?: string;
+  public localPCPassword?: string;
+  public adminPCPassword?: string;
 }
 
 export default (sequelize: Sequelize) => {
@@ -36,28 +38,31 @@ export default (sequelize: Sequelize) => {
         primaryKey: true,
       },
       name: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       phone: {
-        type: DataTypes.STRING(24),
+        type: DataTypes.STRING,
       },
       email: {
-        type: DataTypes.STRING(24),
+        type: DataTypes.STRING,
       },
       birthday: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.STRING,
       },
       role: {
-        type: DataTypes.STRING(10),
+        type: DataTypes.STRING,
         allowNull: false,
       },
       pcName: {
-        type: DataTypes.STRING(12),
+        type: DataTypes.STRING,
         allowNull: false,
       },
-      pcPassword: {
-        type: DataTypes.STRING(12),
+      localPCPassword: {
+        type: DataTypes.STRING,
+      },
+      adminPCPassword: {
+        type: DataTypes.STRING,
       },
     },
     {

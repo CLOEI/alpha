@@ -2,8 +2,14 @@ import { Sequelize } from "sequelize";
 import client from "./clientModel";
 import company from "./companyModel";
 import user from "./userModel";
-import maintenanceModel from "./maintenanceModel";
+import maintenance from "./maintenanceModel";
 import spec from "./specModel";
+import data from "./dataModel";
+import remote from "./remoteModel";
+import memory from "./memoryModel";
+import printer from "./printerModel";
+import mapping from "./mappingModel";
+import credential from "./credentialModel";
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
@@ -12,21 +18,54 @@ const sequelize = new Sequelize({
 const Client = client(sequelize);
 const Company = company(sequelize);
 const User = user(sequelize);
-const Maintenance = maintenanceModel(sequelize);
+const Maintenance = maintenance(sequelize);
 const Spec = spec(sequelize);
+const Data = data(sequelize);
+const Remote = remote(sequelize);
+const Memory = memory(sequelize);
+const Printer = printer(sequelize);
+const Mapping = mapping(sequelize);
+const Credential = credential(sequelize);
 
 // intialze associations
 Company.hasMany(Client);
 Client.belongsTo(Company);
 Spec.belongsTo(Client);
+Data.belongsTo(Client);
+Maintenance.hasMany(Data);
 
 Maintenance.belongsTo(Company);
 Maintenance.belongsTo(User);
 Client.belongsTo(Company);
 Company.hasMany(Maintenance);
 User.hasMany(Maintenance);
+Client.hasMany(Data);
 Client.hasOne(Spec);
+
+Spec.hasMany(Memory);
+Spec.hasMany(Printer);
+Spec.hasMany(Remote);
+Spec.hasMany(Mapping);
+Spec.hasMany(Credential);
+
+Memory.belongsTo(Spec);
+Printer.belongsTo(Spec);
+Remote.belongsTo(Spec);
+Mapping.belongsTo(Spec);
+Credential.belongsTo(Spec);
 
 sequelize.sync().then((res) => console.log(res));
 
-export { Client, Company, User, Maintenance, Spec };
+export {
+  Client,
+  Company,
+  User,
+  Maintenance,
+  Spec,
+  Data,
+  Remote,
+  Memory,
+  Printer,
+  Mapping,
+  Credential,
+};

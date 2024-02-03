@@ -1,6 +1,6 @@
 import { compare, hash } from "bcrypt";
 import { Maintenance, User } from "../models";
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import { GraphQLError } from "graphql";
 
 type UserLogin = {
@@ -18,10 +18,16 @@ const typeDefs = `#graphql
     createdAt: String!
   }
 
+  type Verified {
+    id: Int
+    username: String
+    role: String
+  }
+
   type Query {
     users: [User!]
     user(id: Int!): User
-    verified: Boolean!
+    verified: Verified
   }
 
   type Mutation {
@@ -63,9 +69,9 @@ const resolvers = {
     },
     verified: async (_: any, x: any, ctx: Context) => {
       if (ctx.user) {
-        return true;
+        return ctx.user;
       }
-      return false;
+      return null;
     },
   },
   Mutation: {

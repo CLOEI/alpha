@@ -19,6 +19,7 @@ const typeDefs = `#graphql
   type Mutation {
     addCompany(name: String!, streetName: String!, coordinate: String!): Company!
     removeCompany(id: Int!): Int!
+    updateCompany(id: Int!, name: String, streetName: String, coordinate: String): [Int!]
   }
 `;
 
@@ -64,6 +65,21 @@ const resolvers = {
         return company;
       } catch (error) {
         throw new GraphQLError("Error removing company");
+      }
+    },
+    updateCompany: async (
+      _: any,
+      { id, name, streetName, coordinate }: any
+    ) => {
+      try {
+        const company = await Company.update(
+          { name, streetName, coordinate },
+          { where: { id } }
+        );
+        return company;
+      } catch (error) {
+        console.log(error);
+        throw new GraphQLError("Error updating company");
       }
     },
   },

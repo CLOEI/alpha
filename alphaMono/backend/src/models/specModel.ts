@@ -7,6 +7,14 @@ interface SpecAttributes {
   psu?: string;
   motherboard?: string;
   ClientId?: number;
+  hdd?: string;
+  ssd?: string;
+  dvd?: string;
+  case?: string;
+  monitor?: string;
+  ip?: string;
+  mac?: string;
+  ups?: string;
 }
 
 interface SpecCreationAttributes extends Optional<SpecAttributes, "ClientId"> {}
@@ -21,6 +29,14 @@ class Spec
   public psu?: string;
   public motherboard?: string;
   public ClientId!: number;
+  public hdd?: string;
+  public ssd?: string;
+  public dvd?: string;
+  public case?: string;
+  public monitor?: string;
+  public ip?: string;
+  public mac?: string;
+  public ups?: string;
 }
 
 export default (sequelize: Sequelize) => {
@@ -50,6 +66,38 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
+      },
+      hdd: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      ssd: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      dvd: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      case: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      monitor: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      ip: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      mac: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      ups: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {

@@ -18,18 +18,44 @@ type ClientArgs = {
 };
 
 const typeDefs = `#graphql
+  type Data {
+    id: Int!
+    ch: Boolean
+    pc: Boolean
+    te: Boolean
+    ufp: Boolean
+    ufcj: Boolean
+    ua: Boolean
+    cmc: Boolean
+    ck: Boolean
+    cm: Boolean
+    sa: Boolean
+    rde: Boolean
+    bd: Boolean
+    dh: Boolean
+    pmp: Boolean
+    sea: Boolean
+    md: Boolean
+    mp: Boolean
+    rc: Boolean
+    sr: Boolean
+    signature: String
+  }
+
   type Client {
     id: Int!
     name: String!
     role: String!
     companyId: Int!
     pcName: String!
-    pcPassword: String
+    localPCPassword: String
+    adminPCPassword: String
     phone: String
     email: String
     birthday: String
     Spec: Spec
     Company: Company
+    Data: [Data]
   }
 
   type Query {
@@ -40,7 +66,7 @@ const typeDefs = `#graphql
   type Mutation {
     addClient(name: String!, role: String!, companyId: Int!, pcName: String!, phone: String, email: String, birthday: String): Client!
     removeClient(id: Int!): Boolean
-    updateClient(id: Int!, pcName: String, pcPassword: String, phone: String, email: String): [Int!]
+    updateClient(id: Int!, pcName: String, localPCPassword: String, adminPCPassword: String, phone: String, email: String): [Int!]
   }
 `;
 

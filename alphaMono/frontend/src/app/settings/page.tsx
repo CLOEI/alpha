@@ -94,7 +94,7 @@ function Page() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      company: "",
+      name: "",
       type: "",
       startAt: "",
     },
@@ -113,34 +113,34 @@ function Page() {
     }
   };
 
-  const onSubmit = async (form: z.infer<typeof formSchema>) => {
-    toast.promise(
-      addMaintenance({
-        variables: {
-          type: form.type,
-          companyId: data.companies.find((c: any) => c.name === form.company)
-            .id,
-        },
-      }),
-      {
-        loading: "Adding new task...",
-        success: () => {
-          refetch();
-          return "Task added successfully";
-        },
-        error: (err) => {
-          console.log(err);
-          return "error";
-        },
-      },
-      {
-        style: {
-          background: "#18181b",
-          color: "#fff",
-        },
-      }
-    );
-  };
+  // const onSubmit = async (form: z.infer<typeof formSchema>) => {
+  //   toast.promise(
+  //     addMaintenance({
+  //       variables: {
+  //         type: form.type,
+  //         companyId: data.companies.find((c: any) => c.name === form.company)
+  //           .id,
+  //       },
+  //     }),
+  //     {
+  //       loading: "Adding new task...",
+  //       success: () => {
+  //         refetch();
+  //         return "Task added successfully";
+  //       },
+  //       error: (err) => {
+  //         console.log(err);
+  //         return "error";
+  //       },
+  //     },
+  //     {
+  //       style: {
+  //         background: "#18181b",
+  //         color: "#fff",
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <div>
@@ -168,16 +168,18 @@ function Page() {
                     return (
                       <Card key={i} isPressable className="w-full" as="div">
                         <CardHeader className="flex gap-3">
-                          <Avatar name={user.username} />
+                          <Avatar isBordered name={user.username} />
                           <div className="text-left flex flex-1 justify-between">
                             <div>
                               <p className="text-md">{user.username}</p>
                               <p className="text-sm text-default-500">
                                 {user.role} -{" "}
-                                {dayjs(user.createdAt).format("DD/MM/YYYY")}
+                                {dayjs
+                                  .unix(user.createdAt / 1000)
+                                  .format("DD/MM/YYYY - HH:mm")}
                               </p>
                             </div>
-                            <Button
+                            {/* <Button
                               color="danger"
                               onClick={() => {
                                 removeUser({
@@ -189,7 +191,7 @@ function Page() {
                               }}
                             >
                               <Trash size={24} />
-                            </Button>
+                            </Button> */}
                           </div>
                         </CardHeader>
                       </Card>

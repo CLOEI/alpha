@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
-import api from "./api";
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 function useAuth() {
+  const { data, refetch, loading } = useQuery(gql`
+    query Query {
+      verified {
+        id
+        role
+        username
+      }
+    }
+  `);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    api.query({
-      query: gql`
-        query Query {
-          verify
-        }
-      `,
-    });
-  }, []);
+    if (!loading) {
+      setUser(data.verified);
+    }
+  }, [data, loading]);
 
-  return [user, setUser];
+  return { user, refetch, loading };
 }
 
 export default useAuth;

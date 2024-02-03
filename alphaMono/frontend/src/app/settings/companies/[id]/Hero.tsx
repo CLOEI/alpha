@@ -1,84 +1,74 @@
 import { gql, useMutation } from "@apollo/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Avatar,
   Button,
-  Card,
-  CardHeader,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
   Spacer,
-  Input,
 } from "@nextui-org/react";
-import { Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import {
+  CircuitBoard,
+  Cpu,
+  MemoryStick,
+  Monitor,
+  Pen,
+  SmartphoneCharging,
+} from "lucide-react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-  name: z.string().min(1, {
-    message: "Company is required",
-  }),
-  streetName: z.string().min(1, {
-    message: "Street name is required",
-  }),
-  coordinate: z.string().min(1, {
-    message: "Coordinate is required",
-  }),
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  streetName: z.string().optional(),
+  coordinate: z.string().optional(),
 });
 
-function Companies({ data, refetch }: any) {
-  const router = useRouter();
-  const [openModal, setOpenModal] = useState(false);
-  const [addCompany] = useMutation(gql`
-    mutation AddCompany(
-      $name: String!
-      $streetName: String!
-      $coordinate: String!
+function Hero({ modal: { open, fn }, data, refetch, id }: any) {
+  const [updateCompany] = useMutation(gql`
+    mutation UpdateCompany(
+      $updateCompanyId: Int!
+      $name: String
+      $streetName: String
+      $coordinate: String
     ) {
-      addCompany(
+      updateCompany(
+        id: $updateCompanyId
         name: $name
         streetName: $streetName
         coordinate: $coordinate
-      ) {
-        id
-      }
+      )
     }
   `);
-  const [removeCompany] = useMutation(gql`
-    mutation RemoveCompany($removeCompanyId: Int!) {
-      removeCompany(id: $removeCompanyId)
-    }
-  `);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      streetName: "",
-      coordinate: "",
+      name: data.name || "",
+      streetName: data.streetName || "",
+      coordinate: data.coordinate || "",
     },
   });
 
   const onSubmit = async (form: z.infer<typeof formSchema>) => {
     toast.promise(
-      addCompany({
+      updateCompany({
         variables: {
+          updateCompanyId: parseInt(id),
           name: form.name,
           streetName: form.streetName,
           coordinate: form.coordinate,
         },
       }),
       {
-        loading: "Adding new company...",
+        loading: "Updating company...",
         success: () => {
           refetch();
-          setOpenModal(false);
-          return "Company added successfully";
+          fn(false);
+          return "Company updated successfully";
         },
         error: (err) => {
           return err.message;
@@ -95,53 +85,29 @@ function Companies({ data, refetch }: any) {
 
   return (
     <>
-      <div className="space-y-2">
-        <div className="ml-auto w-max">
-          <Button
-            radius="sm"
-            startContent={<Plus size={24} />}
-            onClick={() => setOpenModal(true)}
-          >
-            New
-          </Button>
-        </div>
-        <div className="grid gap-2 md:grid-cols-2">
-          {data.map((company: any, i: number) => {
-            return (
-              <Card
-                key={i}
-                isPressable
-                className="w-full"
-                onClick={() => router.push(`/settings/companies/${company.id}`)}
-              >
-                <CardHeader className="flex gap-3">
-                  <Avatar name={company.name} />
-                  <div className="flex flex-1 items-center justify-between">
-                    <p className="text-md">{company.name}</p>
-                    <Button
-                      color="danger"
-                      onClick={() => removeCompany(company.id)}
-                    >
-                      <Trash size={24} />
-                    </Button>
-                  </div>
-                </CardHeader>
-              </Card>
-            );
-          })}
-        </div>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">
+          {data.name}{" "}
+          <span className="text-sm font-light text-default-500">
+            ( id : {data.id})
+          </span>
+        </h1>
+        <Button isIconOnly size="sm" onClick={() => fn(true)}>
+          <Pen />
+        </Button>
       </div>
-      <Modal isOpen={openModal} onClose={() => setOpenModal(false)}>
+      <p className="text-default-500">Street name : {data.streetName}</p>
+      <p className="text-default-500">Coordinate : {data.coordinate}</p>
+      <Modal isOpen={open} onClose={() => fn(false)}>
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Add company</ModalHeader>
+              <ModalHeader>Update Company</ModalHeader>
               <ModalBody>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <Input
                     type="text"
                     label="Name"
-                    isRequired
                     isInvalid={!!form.formState.errors.name}
                     errorMessage={form.formState.errors.name?.message}
                     {...form.register("name")}
@@ -150,7 +116,6 @@ function Companies({ data, refetch }: any) {
                   <Input
                     type="text"
                     label="Street name"
-                    isRequired
                     isInvalid={!!form.formState.errors.streetName}
                     errorMessage={form.formState.errors.streetName?.message}
                     {...form.register("streetName")}
@@ -159,7 +124,6 @@ function Companies({ data, refetch }: any) {
                   <Input
                     type="text"
                     label="Coordinate"
-                    isRequired
                     isInvalid={!!form.formState.errors.coordinate}
                     errorMessage={form.formState.errors.coordinate?.message}
                     {...form.register("coordinate")}
@@ -170,7 +134,7 @@ function Companies({ data, refetch }: any) {
                     className="ml-auto block"
                     color="success"
                   >
-                    Add
+                    Update
                   </Button>
                 </form>
               </ModalBody>
@@ -182,4 +146,4 @@ function Companies({ data, refetch }: any) {
   );
 }
 
-export default Companies;
+export default Hero;

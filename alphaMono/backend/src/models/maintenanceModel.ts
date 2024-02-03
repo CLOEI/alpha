@@ -5,6 +5,7 @@ interface MaintenanceAttributes {
   type: string;
   CompanyId: number;
   UserId: number;
+  note?: string;
 }
 
 interface MaintenanceCreationAttributes
@@ -18,6 +19,7 @@ class Maintenance
   public type!: string;
   public CompanyId!: number;
   public UserId!: number;
+  public note!: string;
 }
 
 export default (sequelize: Sequelize) => {
@@ -39,6 +41,10 @@ export default (sequelize: Sequelize) => {
       UserId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      note: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {

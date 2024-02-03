@@ -2,15 +2,20 @@
 
 import { gql, useQuery } from "@apollo/client";
 import {
+  Accordion,
+  AccordionItem,
   Avatar,
   BreadcrumbItem,
   Breadcrumbs,
+  Button,
   Card,
   CardHeader,
   Divider,
   Spacer,
 } from "@nextui-org/react";
 import dayjs from "dayjs";
+import SignaturePad from "react-signature-pad-wrapper";
+import Data from "./Data";
 
 function Page({ params }: any) {
   const { loading, data, refetch } = useQuery(
@@ -23,8 +28,34 @@ function Page({ params }: any) {
             coordinate
             id
             Clients {
+              id
               name
               pcName
+              Data {
+                id
+                ch
+                pc
+                te
+                ufp
+                ufcj
+                ua
+                cmc
+                ck
+                cm
+                sa
+                rde
+                bd
+                dh
+                pmp
+                sea
+                md
+                mp
+                rc
+                sr
+                signature
+                ClientId
+                MaintenanceId
+              }
             }
           }
           User {
@@ -76,9 +107,9 @@ function Page({ params }: any) {
             <p>Person in charge : {data.maintenance.User.username}</p>
             <p>
               Start time :{" "}
-              {dayjs(data.maintenance.createdAt).format(
-                "DD/MM/YYYY - HH:mm:ss"
-              )}
+              {dayjs
+                .unix(data.maintenance.createdAt / 1000)
+                .format("DD/MM/YYYY - HH:mm")}
             </p>
             <Spacer y={2} />
             <div className="flex items-center space-x-2 overflow-hidden">
@@ -86,18 +117,27 @@ function Page({ params }: any) {
               <Divider />
             </div>
             <Spacer y={2} />
-            <div className="space-y-2">
+            <Accordion>
               {data.maintenance.Company.Clients.map((c: any, i: number) => {
                 return (
-                  <Card isPressable className="w-full" key={i}>
-                    <CardHeader>
-                      <Avatar name={c.name} />
-                      <p className="ml-2 text-left">{c.name}</p>
-                    </CardHeader>
-                  </Card>
+                  <AccordionItem
+                    key={i}
+                    startContent={
+                      <Avatar isBordered color="danger" name={c.name} />
+                    }
+                    title={c.name}
+                    subtitle={`${
+                      c.Data.length > 0
+                        ? Object.values(c.Data[0]).filter((e) => e === true)
+                            .length
+                        : 0
+                    }/19 Checked`}
+                  >
+                    <Data data={c} mid={params.id} refetch={refetch} />
+                  </AccordionItem>
                 );
               })}
-            </div>
+            </Accordion>
           </div>
         ) : null}
       </div>

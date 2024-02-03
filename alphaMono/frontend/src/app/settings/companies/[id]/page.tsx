@@ -10,11 +10,13 @@ import {
   Divider,
   Spacer,
 } from "@nextui-org/react";
-import { Plus } from "lucide-react";
+import { Pen, Plus } from "lucide-react";
 import Clients from "./Clients";
 import { useState } from "react";
+import Hero from "./Hero";
 
 function Page({ params }: any) {
+  const [heroModal, setHeroModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const { loading, data, refetch } = useQuery(
     gql`
@@ -53,18 +55,15 @@ function Page({ params }: any) {
       <div>
         {!loading ? (
           <div>
-            <h1 className="text-2xl font-bold">
-              {data.company.name}{" "}
-              <span className="text-sm font-light text-default-500">
-                ( id : {data.company.id})
-              </span>
-            </h1>
-            <p className="text-default-500">
-              Street name : {data.company.streetName}
-            </p>
-            <p className="text-default-500">
-              Coordinate : {data.company.coordinate}
-            </p>
+            <Hero
+              modal={{
+                open: heroModal,
+                fn: setHeroModal,
+              }}
+              data={data.company}
+              refetch={refetch}
+              id={params.id}
+            />
             <Spacer y={2} />
             <div className="flex items-center space-x-2 overflow-hidden">
               <p className="text-xl text-default-500 whitespace-nowrap">

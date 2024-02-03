@@ -106,6 +106,7 @@ function Page() {
         loading: "Adding new task...",
         success: () => {
           refetch();
+          setOpenModal(false);
           return "Task added successfully";
         },
         error: (err) => {
@@ -129,7 +130,7 @@ function Page() {
       </Breadcrumbs>
       <Spacer y={2} />
       <div className="w-max ml-auto space-x-1">
-        <Button radius="sm" isIconOnly variant="bordered">
+        <Button radius="sm" isIconOnly variant="bordered" isDisabled>
           <SlidersHorizontal />
         </Button>
         <Button
@@ -164,7 +165,9 @@ function Page() {
                   <CardFooter className="flex justify-between">
                     <Chip color={getColor(m.type)}>{m.type}</Chip>
                     <p className="text-default-500">
-                      {dayjs(m.createdAt).format("DD/MM/YYYY")}
+                      {dayjs
+                        .unix(m.createdAt / 1000)
+                        .format("DD/MM/YYYY - HH:mm")}
                     </p>
                   </CardFooter>
                 </Card>

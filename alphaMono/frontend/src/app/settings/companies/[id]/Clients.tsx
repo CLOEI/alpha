@@ -141,7 +141,7 @@ function Clients({
                   }
                 >
                   <CardHeader>
-                    <Avatar name={c.name} />
+                    <Avatar isBordered name={c.name} />
                     <div className="flex flex-1 items-center justify-between">
                       <p className="ml-2 text-left">{c.name}</p>
                       <Button

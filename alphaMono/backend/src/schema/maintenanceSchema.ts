@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql";
-import { Company, Maintenance } from "../models";
+import { Company, Maintenance, Data, Client } from "../models";
 
 const typeDefs = `#graphql
   type Maintenance {
@@ -10,6 +10,7 @@ const typeDefs = `#graphql
     User: User
     Company: Company!
     createdAt: String!
+    note: String
   }
 
   type Query {
@@ -31,7 +32,18 @@ const resolvers = {
           "User",
           {
             model: Company,
-            include: ["Clients"],
+            include: [
+              {
+                model: Client,
+                include: [
+                  {
+                    model: Data,
+                    where: { MaintenanceId: id },
+                    required: false,
+                  },
+                ],
+              },
+            ],
           },
         ],
       });

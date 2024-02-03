@@ -37,17 +37,45 @@ function Page({ params }: any) {
             display
             motherboard
             psu
-            ram
+            Remote {
+              name
+              password
+              address
+            }
+            Printer {
+              name
+            }
+            Memory {
+              speed
+              size
+              name
+              ddr
+            }
+            Mapping {
+              name
+            }
+            Credential {
+              name
+            }
+            case
+            dvd
+            hdd
+            ip
+            mac
+            monitor
+            ssd
+            ups
           }
           name
           id
           email
           pcName
-          pcPassword
           phone
           Company {
             name
           }
+          adminPCPassword
+          localPCPassword
         }
       }
     `,
